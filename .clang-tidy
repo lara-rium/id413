@@ -1,0 +1,4 @@
+Checks: '*,-llvmlibc-*'
+HeaderFilterRegex: '.*'
+SystemHeaders: true
+FormatStyle: file
