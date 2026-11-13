@@ -1,15 +1,13 @@
+#include "display.h"
 #include <Arduino.h>
 
+// NOLINTNEXTLINE(misc-use-internal-linkage)
 void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
+    setup_display();
+
+    show_text("01:40");
 }
 
+// NOLINTNEXTLINE(misc-use-internal-linkage)
 void loop() {
-    constexpr int second = 1000;
-
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(second);
-
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(second);
 }

@@ -1,4 +1,19 @@
-Checks: '*,-llvmlibc-*'
-HeaderFilterRegex: '.*'
-SystemHeaders: true
+Checks:
+- '*'
+- '-llvmlibc-*'
+- '-fuchsia-statically-constructed-objects'
+- '-fuchsia-default-arguments-calls'
+- '-readability-magic-numbers'
+- '-cppcoreguidelines-avoid-magic-numbers'
+- '-cert-err58-cpp'
+- '-cppcoreguidelines-avoid-non-const-global-variables'
+- '-llvm-namespace-comment'
+- '-llvm-header-guard'
+- '-portability-avoid-pragma-once'
+- '-misc-include-cleaner'
+- '-altera-unroll-loops'
+- '-llvm-prefer-static-over-anonymous-namespace'
+- '-google-readability-namespace-comments'
+CheckOptions:
+  misc-header-include-cycle.IgnoredFilesList: '(^|/)[.]platformio/;(^|/)[.]pio/'
 FormatStyle: file
