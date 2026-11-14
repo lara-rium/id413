@@ -1,0 +1,105 @@
+[package]
+name = "id413"
+edition = "2024"
+license = "MIT"
+
+[[bin]]
+name = "id413"
+test = false
+bench = false
+
+[dependencies]
+panic-halt = "1.0.0"
+embedded-hal = "1.0"
+
+[dependencies.atmega-hal]
+git = "https://github.com/rahix/avr-hal"
+rev = "0bbec46f7cfee8542f89f0257619d76cddbf835b"
+features = ["atmega328pb", "rt"]
+
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"
+
+[lints.rust]
+absolute_paths_not_starting_with_crate = "warn"
+ambiguous_negative_literals = "warn"
+deprecated_safe_2024 = "warn"
+edition_2024_expr_fragment_specifier = "warn"
+elided_lifetimes_in_paths = "warn"
+explicit_outlives_requirements = "warn"
+ffi_unwind_calls = "warn"
+impl_trait_overcaptures = "warn"
+keyword_idents = "warn"
+keyword_idents_2018 = "warn"
+keyword_idents_2024 = "warn"
+let_underscore_drop = "warn"
+macro_use_extern_crate = "warn"
+meta_variable_misuse = "warn"
+missing_abi = "warn"
+missing_copy_implementations = "warn"
+missing_debug_implementations = "warn"
+missing_unsafe_on_extern = "warn"
+non_ascii_idents = "warn"
+redundant_imports = "warn"
+redundant_lifetimes = "warn"
+rust_2021_incompatible_closure_captures = "warn"
+rust_2021_incompatible_or_patterns = "warn"
+rust_2021_prefixes_incompatible_syntax = "warn"
+rust_2021_prelude_collisions = "warn"
+rust_2024_guarded_string_incompatible_syntax = "warn"
+rust_2024_incompatible_pat = "warn"
+rust_2024_prelude_collisions = "warn"
+single_use_lifetimes = "warn"
+tail_expr_drop_order = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unit_bindings = "warn"
+unnameable_types = "warn"
+unreachable_pub = "warn"
+unsafe_attr_outside_unsafe = "warn"
+unsafe_code = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+unused_crate_dependencies = "warn"
+unused_extern_crates = "warn"
+unused_import_braces = "warn"
+unused_lifetimes = "warn"
+unused_macro_rules = "warn"
+unused_qualifications = "warn"
+variant_size_differences = "warn"
+closure_returning_async_block = "warn"
+dead_code_pub_in_binary = "warn"
+deprecated_in_future = "warn"
+deref_into_dyn_supertrait = "warn"
+if_let_rescope = "warn"
+impl_trait_redundant_captures = "warn"
+linker_info = "warn"
+raw_borrows_via_references = "warn"
+unused_results = "warn"
+implicit_provenance_casts = "warn"
+multiple_supertrait_upcastable = "warn"
+non_exhaustive_omitted_patterns = "warn"
+unqualified_local_imports = "warn"
+
+[lints.clippy]
+blanket_clippy_restriction_lints = "allow"
+cargo = { level = "warn", priority = -1 }
+implicit_return = "allow"
+missing_docs_in_private_items = "allow"
+missing_inline_in_public_items = "allow"
+nursery = { level = "warn", priority = -1 }
+pattern_type_mismatch = "allow"
+pedantic = { level = "warn", priority = -1 }
+cargo_common_metadata = "allow"
+question_mark_used = "allow"
+restriction = { level = "warn", priority = -1 }
+single_char_lifetime_names = "allow"
+single_call_fn = "allow"

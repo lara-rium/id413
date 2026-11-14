@@ -1,0 +1,11 @@
+[general]
+open-console = true
+serial-baudrate = 57600
+port = "/dev/cu.usbserial-10"
+
+[board]
+inherit = "uno"
+
+[board.avrdude]
+partno = "atmega328p"
+baudrate = 115200
