@@ -7,4 +7,5 @@
 #include <Arduino.h> // IWYU pragma: export
 
 #pragma GCC system_header
+#include <RTClib.h> // IWYU pragma: export
 #include <U8g2lib.h> // IWYU pragma: export
