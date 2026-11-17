@@ -7,22 +7,38 @@
 #![no_std]
 #![no_main]
 
+mod clock;
 mod display;
+mod error;
+mod serial;
 
-use atmega_hal::{clock::MHz16, delay::Delay};
-use embedded_hal::delay::DelayNs as _;
+use atmega_hal::pins;
+use heapless::String;
 use panic_halt as _;
+
+use crate::{clock::Clock, display::Display, error::Error, serial::Serial};
 
 #[atmega_hal::entry]
 fn main() -> ! {
     let peripherals = atmega_hal::Peripherals::take().unwrap();
+    let pins = pins!(peripherals);
 
-    let mut delay = Delay::<MHz16>::new();
-
-    let mut display = display::init(peripherals);
-    display::print("12:50", &mut display);
+    let mut serial = Serial::new(peripherals.USART0, pins.pd0, pins.pd1);
+    let mut display = Display::new(peripherals.TWI0, pins.pc4, pins.pc5);
+    let mut clock = Clock::new();
 
     loop {
-        delay.delay_ms(1000);
+        clock.tick();
+
+        if let Err(error) = iteration(&mut display, &clock) {
+            // TODO: show this on display too
+            serial.print(&String::from(error));
+        }
     }
+}
+
+fn iteration(display: &mut Display, clock: &Clock) -> Result<(), Error> {
+    display.print(&clock.format(clock.now())?)?;
+
+    Ok(())
 }

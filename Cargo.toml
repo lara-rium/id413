@@ -13,10 +13,18 @@ panic-halt = "1.0.0"
 embedded-hal = "1.0"
 ssd1306 = "0.10.0"
 embedded-graphics = "0.8.2"
+avr-progmem = { version = "0.4", default-features = false }
+heapless = "0.9.3"
+
+[dependencies.time]
+version = "0.3.55"
+default-features = false
 
 [dependencies.u8g2-fonts]
 git = "https://github.com/lara-rium/u8g2-fonts"
+branch = "read-from-flash"
 default-features = false
+features = ["avr-progmem"]
 
 [dependencies.atmega-hal]
 git = "https://github.com/rahix/avr-hal"
@@ -69,7 +77,6 @@ tail_expr_drop_order = "warn"
 trivial_casts = "warn"
 trivial_numeric_casts = "warn"
 unit_bindings = "warn"
-unnameable_types = "warn"
 unsafe_attr_outside_unsafe = "warn"
 unsafe_code = "warn"
 unsafe_op_in_unsafe_fn = "warn"
@@ -110,3 +117,8 @@ single_call_fn = "allow"
 allow_attributes_without_reason = "allow"
 unwrap_used = "allow"
 pub_with_shorthand = "allow"
+arithmetic_side_effects = "allow"
+missing_trait_methods = "allow"
+use_debug = "allow"
+unwrap_in_result = "allow"
+as_conversions = "allow"
