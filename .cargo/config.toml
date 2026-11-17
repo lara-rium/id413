@@ -1,9 +1,9 @@
 [build]
 target = "avr-none"
-rustflags = ["-C", "target-cpu=atmega328pb"]
-rustdocflags = ["-C", "target-cpu=atmega328pb"]
 
 [target.'cfg(target_arch = "avr")']
+rustflags = ["-C", "target-cpu=atmega328pb"]
+rustdocflags = ["-C", "target-cpu=atmega328pb"]
 runner = "ravedude"
 
 [unstable]
