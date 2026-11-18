@@ -14,7 +14,11 @@ embedded-hal = "1.0"
 ssd1306 = "0.10.0"
 embedded-graphics = "0.8.2"
 avr-progmem = { version = "0.4", default-features = false }
-heapless = "0.9.3"
+ufmt = "0.2.0"
+
+[dependencies.heapless]
+version = "0.9.3"
+features = ["ufmt"]
 
 [dependencies.time]
 version = "0.3.55"

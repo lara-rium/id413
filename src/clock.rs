@@ -1,7 +1,8 @@
 // TODO: adapt once DS1302 arrives
 
-use heapless::{String, format};
+use heapless::String;
 use time::{Duration, Timestamp, UtcOffset};
+use ufmt::uwrite;
 
 use crate::{display::Text, error::Error};
 
@@ -28,23 +29,33 @@ impl Clock {
         } else if datetime.date() == now.date().previous_day().unwrap() {
             "D\u{fc}n\n".try_into()?
         } else {
-            format!(
-                "{day}/{month:02}/{year}\n",
-                day = datetime.day(),
-                month = datetime.month() as u8,
-                year = datetime.year()
-            )?
+            let mut date = String::new();
+            let month = datetime.month() as u8;
+
+            uwrite!(
+                &mut date,
+                "{}/{}{}/{}\n",
+                datetime.day(),
+                padding(month),
+                month,
+                datetime.year()
+            )?;
+
+            date
         };
 
-        let time = format!(
-            "{hour:02}{maybe_colon}{minute:02}",
-            hour = datetime.hour(),
-            maybe_colon = if self.now.as_seconds() % 2 == 0 {
-                " "
-            } else {
-                ":"
-            },
-            minute = datetime.minute()
+        let mut time = String::new();
+        let hour = datetime.hour();
+        let minute = datetime.minute();
+
+        uwrite!(
+            &mut time,
+            "{}{}{}{}{}",
+            padding(hour),
+            hour,
+            if now.second() % 2 == 0 { " " } else { ":" },
+            padding(minute),
+            minute
         )?;
 
         Ok(Text {
@@ -79,4 +90,8 @@ impl Clock {
     pub const fn update(&mut self) {
         self.timestamp = self.now;
     }
+}
+
+const fn padding(integer: u8) -> &'static str {
+    if integer < 10 { "0" } else { "" }
 }

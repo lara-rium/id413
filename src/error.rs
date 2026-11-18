@@ -1,6 +1,7 @@
 use core::fmt;
 
-use heapless::{CapacityError, String, format};
+use heapless::{CapacityError, String};
+use ufmt::uwrite;
 
 use crate::display::U8g2Error;
 
@@ -45,6 +46,8 @@ impl From<&Error> for u8 {
 
 impl From<Error> for String<2> {
     fn from(value: Error) -> Self {
-        format!("E{}", u8::from(&value)).unwrap_or_else(|_| "E0".try_into().unwrap())
+        let mut message = Self::new();
+        uwrite!(&mut message, "E{}", u8::from(&value)).unwrap();
+        message
     }
 }
