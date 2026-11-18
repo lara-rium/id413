@@ -24,16 +24,15 @@ impl Clock {
         let datetime = timestamp.to_offset(OFFSET);
         let now = self.now.to_offset(OFFSET);
 
-        // if datetime.date() != now.date() {
         let date = if datetime.date() == now.date() {
+            String::new()
+        } else {
             format!(
                 "{day}/{month:02}/{year}\n",
                 day = datetime.day(),
                 month = datetime.month() as u8,
                 year = datetime.year()
             )?
-        } else {
-            String::new()
         };
 
         let time = format!(

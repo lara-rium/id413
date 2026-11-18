@@ -77,26 +77,46 @@ impl Display {
     {
         self.ssd1306.clear_buffer();
 
-        if !text.small.as_ref().is_empty() {
-            self.font_16_renderer.render_aligned(
-                text.small.as_ref(),
-                Point::new(63, 0),
-                VerticalPosition::Top,
-                HorizontalAlignment::Center,
-                FontColor::Transparent(BinaryColor::On),
-                &mut self.ssd1306,
-            )?;
-        }
+        match (text.small.as_ref(), text.large.as_ref()) {
+            ("", large) => {
+                self.font_32_renderer.render_aligned(
+                    large,
+                    Point::new(63, 31),
+                    VerticalPosition::Center,
+                    HorizontalAlignment::Center,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut self.ssd1306,
+                )?;
+            }
+            (small, "") => {
+                self.font_16_renderer.render_aligned(
+                    small,
+                    Point::new(63, 31),
+                    VerticalPosition::Center,
+                    HorizontalAlignment::Center,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut self.ssd1306,
+                )?;
+            }
+            (small, large) => {
+                self.font_16_renderer.render_aligned(
+                    small,
+                    Point::new(63, 0),
+                    VerticalPosition::Top,
+                    HorizontalAlignment::Center,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut self.ssd1306,
+                )?;
 
-        if !text.large.as_ref().is_empty() {
-            self.font_32_renderer.render_aligned(
-                text.large.as_ref(),
-                Point::new(63, 63),
-                VerticalPosition::Bottom,
-                HorizontalAlignment::Center,
-                FontColor::Transparent(BinaryColor::On),
-                &mut self.ssd1306,
-            )?;
+                self.font_32_renderer.render_aligned(
+                    large,
+                    Point::new(63, 63),
+                    VerticalPosition::Bottom,
+                    HorizontalAlignment::Center,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut self.ssd1306,
+                )?;
+            }
         }
 
         self.ssd1306.flush().map_err(U8g2Error::DisplayError)?;
