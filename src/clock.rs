@@ -14,6 +14,7 @@ const OFFSET: UtcOffset = {
 
 pub struct Clock {
     now: Timestamp,
+    previous_timestamp: Timestamp,
     timestamp: Timestamp,
 }
 
@@ -56,6 +57,7 @@ impl Clock {
         Self {
             now,
             timestamp: now,
+            previous_timestamp: now,
         }
     }
 
@@ -63,6 +65,10 @@ impl Clock {
         self.now += Duration::seconds(1);
 
         self.format()
+    }
+
+    pub const fn undo(&mut self) {
+        self.timestamp = self.previous_timestamp;
     }
 
     pub const fn update(&mut self) {

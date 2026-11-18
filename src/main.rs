@@ -33,7 +33,7 @@ fn main() -> ! {
 
     let mut serial = Serial::new(peripherals.USART0, pins.pd0, pins.pd1);
     let mut display = Display::new(peripherals.TWI0, pins.pc4, pins.pc5);
-    let buttons = Buttons::new(pins.pd2, pins.pd3);
+    let buttons = Buttons::new(pins.pd2, pins.pd3, pins.pd4);
     let mut delay = Delay::<MHz16>::new();
     let mut clock = Clock::new();
 
@@ -58,10 +58,15 @@ fn iteration(
 ) -> Result<(), Error> {
     if buttons.update_clock.is_low() {
         clock.update();
+        display.wake()?;
     }
 
     if buttons.wake_screen.is_low() {
         display.wake()?;
+    }
+
+    if buttons.undo_clock.is_low() {
+        clock.undo();
     }
 
     let clock_format = clock.tick()?;
