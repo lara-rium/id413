@@ -25,6 +25,8 @@ impl Clock {
 
         let date = if datetime.date() == now.date() {
             String::new()
+        } else if datetime.date() == now.date().previous_day().unwrap() {
+            "D\u{fc}n\n".try_into()?
         } else {
             format!(
                 "{day}/{month:02}/{year}\n",
@@ -54,6 +56,9 @@ impl Clock {
     pub fn new() -> Self {
         let now = Timestamp::from_seconds(env!("BUILD_TIMESTAMP").parse().unwrap()).unwrap();
 
+        // TODO: remove this dev comment after prod
+        // 2026/11/18 23:59:45: 1795035585
+        // 2026/11/17 23:59:45: 1794949185
         Self {
             now,
             timestamp: now,
