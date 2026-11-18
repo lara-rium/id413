@@ -54,7 +54,7 @@ impl Display {
             twi0,
             pc4.into_pull_up_input(),
             pc5.into_pull_up_input(),
-            100_000,
+            400_000,
         );
 
         let mut ssd1306 = ssd1306::Ssd1306::new(

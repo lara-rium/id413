@@ -36,8 +36,13 @@ impl Clock {
         };
 
         let time = format!(
-            "{hour:02}:{minute:02}",
+            "{hour:02}{maybe_colon}{minute:02}",
             hour = datetime.hour(),
+            maybe_colon = if self.now.as_seconds() % 2 == 0 {
+                " "
+            } else {
+                ":"
+            },
             minute = datetime.minute()
         )?;
 
