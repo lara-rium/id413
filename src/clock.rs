@@ -17,11 +17,12 @@ const OFFSET: UtcOffset = {
 pub struct Clock {
     delay: Delay<MHz16>,
     now: Timestamp,
+    timestamp: Timestamp,
 }
 
 impl Clock {
-    pub fn format(&self, timestamp: Timestamp) -> Result<Text<String<11>>, Error> {
-        let datetime = timestamp.to_offset(OFFSET);
+    fn format(&self) -> Result<Text<String<11>>, Error> {
+        let datetime = self.timestamp.to_offset(OFFSET);
         let now = self.now.to_offset(OFFSET);
 
         let date = if datetime.date() == now.date() {
@@ -53,18 +54,23 @@ impl Clock {
     }
 
     pub fn new() -> Self {
+        let now = Timestamp::from_seconds(env!("BUILD_TIMESTAMP").parse().unwrap()).unwrap();
+
         Self {
-            now: Timestamp::from_seconds(env!("BUILD_TIMESTAMP").parse().unwrap()).unwrap(),
+            now,
             delay: Delay::new(),
+            timestamp: now,
         }
     }
 
-    pub const fn now(&self) -> Timestamp {
-        self.now
-    }
-
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self) -> Result<Text<String<11>>, Error> {
         self.delay.delay_ms(1000);
         self.now += Duration::seconds(1);
+
+        self.format()
+    }
+
+    pub const fn update(&mut self) {
+        self.timestamp = self.now;
     }
 }

@@ -7,6 +7,7 @@
 #![no_std]
 #![no_main]
 
+mod button;
 mod clock;
 mod display;
 mod error;
@@ -17,6 +18,7 @@ use heapless::String;
 use panic_halt as _;
 
 use crate::{
+    button::Button,
     clock::Clock,
     display::{Display, Text},
     error::Error,
@@ -31,12 +33,12 @@ fn main() -> ! {
     let mut serial = Serial::new(peripherals.USART0, pins.pd0, pins.pd1);
     let mut display = Display::new(peripherals.TWI0, pins.pc4, pins.pc5);
     let mut clock = Clock::new();
+    let button = Button::new(pins.pd2);
 
     loop {
-        clock.tick();
-
-        if let Err(error) = iteration(&mut display, &clock) {
+        if let Err(error) = iteration(&mut display, &button, &mut clock) {
             let error_message = String::from(error);
+
             serial.print(&error_message);
             let _: Result<(), Error> = display.print(&Text {
                 large: "",
@@ -46,8 +48,12 @@ fn main() -> ! {
     }
 }
 
-fn iteration(display: &mut Display, clock: &Clock) -> Result<(), Error> {
-    display.print(&clock.format(clock.now())?)?;
+fn iteration(display: &mut Display, button: &Button, clock: &mut Clock) -> Result<(), Error> {
+    if button.is_pressed() {
+        clock.update();
+    }
+
+    display.print(&clock.tick()?)?;
 
     Ok(())
 }
