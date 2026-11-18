@@ -16,7 +16,12 @@ use atmega_hal::pins;
 use heapless::String;
 use panic_halt as _;
 
-use crate::{clock::Clock, display::Display, error::Error, serial::Serial};
+use crate::{
+    clock::Clock,
+    display::{Display, Text},
+    error::Error,
+    serial::Serial,
+};
 
 #[atmega_hal::entry]
 fn main() -> ! {
@@ -31,8 +36,12 @@ fn main() -> ! {
         clock.tick();
 
         if let Err(error) = iteration(&mut display, &clock) {
-            // TODO: show this on display too
-            serial.print(&String::from(error));
+            let error_message = String::from(error);
+            serial.print(&error_message);
+            let _: Result<(), Error> = display.print(&Text {
+                large: "",
+                small: &error_message,
+            });
         }
     }
 }
