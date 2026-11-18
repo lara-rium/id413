@@ -43,6 +43,7 @@ pub struct Text<T: AsRef<str>> {
 }
 
 pub struct Display {
+    awake_seconds: u8,
     font_16_renderer: FontRenderer,
     font_32_renderer: FontRenderer,
     ssd1306: Ssd1306,
@@ -68,6 +69,7 @@ impl Display {
             ssd1306: ssd1306.into_buffered_graphics_mode(),
             font_32_renderer: FontRenderer::new_from_progmem(FONT_32.as_slice()),
             font_16_renderer: FontRenderer::new_from_progmem(FONT_16.as_slice()),
+            awake_seconds: 0,
         }
     }
 
@@ -120,6 +122,28 @@ impl Display {
         }
 
         self.ssd1306.flush().map_err(U8g2Error::DisplayError)?;
+
+        Ok(())
+    }
+
+    pub fn tick(&mut self) -> Result<(), Error> {
+        self.awake_seconds += 1;
+
+        if self.awake_seconds >= 30 {
+            self.ssd1306
+                .set_display_on(false)
+                .map_err(U8g2Error::DisplayError)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn wake(&mut self) -> Result<(), Error> {
+        self.awake_seconds = 0;
+
+        self.ssd1306
+            .set_display_on(true)
+            .map_err(U8g2Error::DisplayError)?;
 
         Ok(())
     }

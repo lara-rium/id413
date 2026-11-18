@@ -1,7 +1,5 @@
 // TODO: adapt once DS1302 arrives
 
-use atmega_hal::{clock::MHz16, delay::Delay};
-use embedded_hal::delay::DelayNs as _;
 use heapless::{String, format};
 use time::{Duration, Timestamp, UtcOffset};
 
@@ -15,7 +13,6 @@ const OFFSET: UtcOffset = {
 };
 
 pub struct Clock {
-    delay: Delay<MHz16>,
     now: Timestamp,
     timestamp: Timestamp,
 }
@@ -58,13 +55,11 @@ impl Clock {
 
         Self {
             now,
-            delay: Delay::new(),
             timestamp: now,
         }
     }
 
     pub fn tick(&mut self) -> Result<Text<String<11>>, Error> {
-        self.delay.delay_ms(1000);
         self.now += Duration::seconds(1);
 
         self.format()

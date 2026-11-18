@@ -7,18 +7,19 @@
 #![no_std]
 #![no_main]
 
-mod button;
+mod buttons;
 mod clock;
 mod display;
 mod error;
 mod serial;
 
-use atmega_hal::pins;
+use atmega_hal::{clock::MHz16, delay::Delay, pins};
+use embedded_hal::delay::DelayNs as _;
 use heapless::String;
 use panic_halt as _;
 
 use crate::{
-    button::Button,
+    buttons::Buttons,
     clock::Clock,
     display::{Display, Text},
     error::Error,
@@ -32,11 +33,12 @@ fn main() -> ! {
 
     let mut serial = Serial::new(peripherals.USART0, pins.pd0, pins.pd1);
     let mut display = Display::new(peripherals.TWI0, pins.pc4, pins.pc5);
+    let buttons = Buttons::new(pins.pd2, pins.pd3);
+    let mut delay = Delay::<MHz16>::new();
     let mut clock = Clock::new();
-    let button = Button::new(pins.pd2);
 
     loop {
-        if let Err(error) = iteration(&mut display, &button, &mut clock) {
+        if let Err(error) = iteration(&mut display, &buttons, &mut delay, &mut clock) {
             let error_message = String::from(error);
 
             serial.print(&error_message);
@@ -48,12 +50,26 @@ fn main() -> ! {
     }
 }
 
-fn iteration(display: &mut Display, button: &Button, clock: &mut Clock) -> Result<(), Error> {
-    if button.is_pressed() {
+fn iteration(
+    display: &mut Display,
+    buttons: &Buttons,
+    delay: &mut Delay<MHz16>,
+    clock: &mut Clock,
+) -> Result<(), Error> {
+    if buttons.update_clock.is_low() {
         clock.update();
     }
 
-    display.print(&clock.tick()?)?;
+    if buttons.wake_screen.is_low() {
+        display.wake()?;
+    }
+
+    let clock_format = clock.tick()?;
+    display.tick()?;
+
+    display.print(&clock_format)?;
+
+    delay.delay_ms(1000);
 
     Ok(())
 }
